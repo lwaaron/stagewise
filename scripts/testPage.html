@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐙 Stagewise 工具栏测试页面 - OctopusDev</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #e6f3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: slideInLeft 0.8s ease-out;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .demo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .demo-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+            transform: translateY(-5px);
+        }
+        
+        .demo-card:hover::before {
+            left: 100%;
+        }
+        
+        .demo-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #718096, #4a5568);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 5px 15px rgba(113, 128, 150, 0.4);
+        }
+        
+        .toolbar-info {
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .toolbar-info::before {
+            content: '💡';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .toolbar-info h4 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .feature-list li:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateX(5px);
+        }
+        
+        .feature-list li::before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+            top: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        .status-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            z-index: 1000;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: slideInRight 0.8s ease-out;
+        }
+        
+        .status-online {
+            color: #48bb78;
+            font-weight: 600;
+        }
+        
+        .status-offline {
+            color: #f56565;
+            font-weight: 600;
+        }
+        
+        .interactive-demo {
+            background: linear-gradient(145deg, #f8fafc, #ffffff);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border: 2px dashed #e2e8f0;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .interactive-demo:hover {
+            border-color: #667eea;
+            background: linear-gradient(145deg, #f0f4ff, #f8fafc);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .data-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .data-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .media-placeholder {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin: 1rem 0;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .media-placeholder::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%) translateY(-100%);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%);
+            }
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            opacity: 0.8;
+        }
+        
+        .footer a {
+            color: #e6f3ff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .status-indicator {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 1rem;
+                width: fit-content;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 连接状态指示器 -->
+    <div class="status-indicator">
+        <div id="connection-status" class="status-offline">
+            🔴 工具栏未连接
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 页面头部 -->
+        <header class="header">
+            <h1>🐙 Stagewise 工具栏</h1>
+            <p>通用前端开发工具栏 - 测试环境</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">by OctopusDev</p>
+        </header>
+
+        <!-- 功能演示区域 -->
+        <section class="demo-section">
+            <h2>🎯 工具栏功能演示</h2>
+            
+            <div class="toolbar-info">
+                <h4>📌 使用说明</h4>
+                <p>工具栏位于页面右下角，点击可展开功能面板。您可以：</p>
+                <ul class="feature-list">
+                    <li>选择页面元素进行分析</li>
+                    <li>发送提示到AI代理（Cursor、Windsurf等）</li>
+                    <li>查看元素信息和样式属性</li>
+                    <li>配置工具栏行为和插件</li>
+                    <li>连接到IDE扩展进行实时开发</li>
+                </ul>
+            </div>
+            
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3>🎨 界面元素</h3>
+                    <p>这些是可以被工具栏选择和分析的界面元素示例。尝试选择下面的按钮：</p>
+                    <button class="btn pulse" onclick="showAlert('主要按钮被点击！')">主要按钮</button>
+                    <button class="btn btn-secondary" onclick="showAlert('次要按钮被点击！')">次要按钮</button>
+                    <button class="btn" onclick="toggleTheme()" style="background: linear-gradient(135deg, #48bb78, #38a169);">切换主题</button>
+                </div>
+                
+                <div class="demo-card">
+                    <h3>📝 表单控件</h3>
+                    <p>表单元素也可以被工具栏分析和修改：</p>
+                    <input type="text" class="form-control" placeholder="输入框示例" id="demo-input">
+                    <select class="form-control" id="demo-select">
+                        <option>选择选项</option>
+                        <option value="1">选项 1</option>
+                        <option value="2">选项 2</option>
+                        <option value="3">选项 3</option>
+                    </select>
+                    <textarea class="form-control" rows="3" placeholder="文本区域示例"></textarea>
+                </div>
+                
+                <div class="demo-card">
+                    <h3>📊 数据展示</h3>
+                    <p>数据表格和列表元素的工具栏分析：</p>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>产品</th>
+                                <th>价格</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Stagewise Pro</td>
+                                <td>¥299</td>
+                                <td>✅ 可用</td>
+                            </tr>
+                            <tr>
+                                <td>工具栏插件</td>
+                                <td>¥99</td>
+                                <td>🔄 开发中</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="demo-card">
+                    <h3>🖼️ 媒体内容</h3>
+                    <p>图片和媒体元素的分析示例：</p>
+                    <div class="media-placeholder">
+                        🎬 动态媒体展示区域
+                    </div>
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <div style="width: 60px; height: 60px; background: #667eea; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">A</div>
+                        <div style="width: 60px; height: 60px; background: #48bb78; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">B</div>
+                        <div style="width: 60px; height: 60px; background: #ed8936; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">C</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 交互式演示区域 -->
+        <section class="demo-section">
+            <h2>🎮 交互式演示</h2>
+            <div class="interactive-demo" onclick="this.style.background='linear-gradient(145deg, #e6fffa, #f0fff4)'; this.innerHTML='<h3>🎉 元素已被选中！</h3><p>工具栏可以检测到这个变化</p>'">
+                <h3>📍 点击这个区域</h3>
+                <p>模拟工具栏的元素选择功能</p>
+            </div>
+            
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3>🎛️ 动态控制</h3>
+                    <button class="btn" onclick="addRandomElement()">添加随机元素</button>
+                    <button class="btn btn-secondary" onclick="removeLastElement()">移除最后元素</button>
+                    <div id="dynamic-content" style="margin-top: 1rem; min-height: 50px; border: 2px dashed #e2e8f0; border-radius: 8px; padding: 1rem;">
+                        <p style="color: #718096; text-align: center;">动态内容区域</p>
+                    </div>
+                </div>
+                
+                <div class="demo-card">
+                    <h3>📊 实时数据</h3>
+                    <div style="display: flex; justify-content: space-between; margin: 1rem 0;">
+                        <div style="text-align: center;">
+                            <div id="counter" style="font-size: 2rem; font-weight: bold; color: #667eea;">0</div>
+                            <small>计数器</small>
+                        </div>
+                        <div style="text-align: center;">
+                            <div id="timestamp" style="font-size: 1rem; color: #718096;">--:--:--</div>
+                            <small>时间戳</small>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="startCounter()">开始计数</button>
+                    <button class="btn btn-secondary" onclick="stopCounter()">停止计数</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 开发工具说明 -->
+        <section class="demo-section">
+            <h2>🛠️ 开发工具使用指南</h2>
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3>🔍 元素选择</h3>
+                    <ul class="feature-list">
+                        <li>点击工具栏的选择器图标</li>
+                        <li>将鼠标悬停在页面元素上</li>
+                        <li>点击要分析的元素</li>
+                        <li>查看元素的详细信息</li>
+                    </ul>
+                </div>
+                
+                <div class="demo-card">
+                    <h3>💬 AI代理通信</h3>
+                    <ul class="feature-list">
+                        <li>选择元素后添加注释</li>
+                        <li>描述想要的修改</li>
+                        <li>发送到AI代理</li>
+                        <li>在IDE中查看建议</li>
+                    </ul>
+                </div>
+                
+                <div class="demo-card">
+                    <h3>⚙️ 工具栏设置</h3>
+                    <ul class="feature-list">
+                        <li>配置IDE连接</li>
+                        <li>选择AI代理类型</li>
+                        <li>自定义插件行为</li>
+                        <li>调整界面偏好</li>
+                    </ul>
+                </div>
+                
+                <div class="demo-card">
+                    <h3>🔗 扩展集成</h3>
+                    <ul class="feature-list">
+                        <li>安装VS Code/Cursor扩展</li>
+                        <li>确保扩展正在运行</li>
+                        <li>工具栏会自动连接</li>
+                        <li>享受无缝开发体验</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p>&copy; 2024 OctopusDev. 基于 <a href="https://github.com/lwaaron/stagewise" target="_blank">Stagewise</a> 开发</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+            <a href="https://x.com/linusorii" target="_blank">🐙 OctopusDev</a> | 
+            <a href="https://github.com/lwaaron/stagewise" target="_blank">📦 GitHub</a>
+        </p>
+    </footer>
+
+    <!-- JavaScript功能 -->
+    <script type="module">
+        // 全局变量
+        let counter = 0;
+        let counterInterval = null;
+        let elementCounter = 0;
+        
+        // 检查工具栏连接状态
+        function checkToolbarConnection() {
+            const statusEl = document.getElementById('connection-status');
+            
+            // 检查是否存在工具栏元素
+            const toolbar = document.querySelector('[data-stagewise-toolbar]') || 
+                           document.querySelector('.stagewise-toolbar') ||
+                           document.querySelector('#stagewise-toolbar') ||
+                           document.querySelector('[class*="stagewise"]') ||
+                           document.querySelector('[id*="stagewise"]');
+            
+            if (toolbar) {
+                statusEl.textContent = '🟢 工具栏已连接';
+                statusEl.className = 'status-online';
+            } else {
+                statusEl.textContent = '🔴 工具栏未连接';
+                statusEl.className = 'status-offline';
+            }
+        }
+        
+        // 显示提示框
+        window.showAlert = function(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 8px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-weight: 500;
+                animation: fadeInScale 0.3s ease-out;
+            `;
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.animation = 'fadeOutScale 0.3s ease-in';
+                setTimeout(() => document.body.removeChild(alertDiv), 300);
+            }, 2000);
+        };
+        
+        // 切换主题
+        window.toggleTheme = function() {
+            const body = document.body;
+            const isDark = body.style.filter === 'invert(1) hue-rotate(180deg)';
+            
+            if (isDark) {
+                body.style.filter = '';
+                showAlert('已切换到亮色主题');
+            } else {
+                body.style.filter = 'invert(1) hue-rotate(180deg)';
+                showAlert('已切换到暗色主题');
+            }
+        };
+        
+        // 添加随机元素
+        window.addRandomElement = function() {
+            const container = document.getElementById('dynamic-content');
+            const colors = ['#667eea', '#48bb78', '#ed8936', '#f56565', '#9f7aea'];
+            const shapes = ['圆形', '方形', '三角', '星形', '心形'];
+            
+            elementCounter++;
+            const element = document.createElement('div');
+            element.style.cssText = `
+                display: inline-block;
+                width: 60px;
+                height: 60px;
+                background: ${colors[Math.floor(Math.random() * colors.length)]};
+                margin: 0.5rem;
+                border-radius: ${Math.random() > 0.5 ? '50%' : '8px'};
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+                animation: bounceIn 0.5s ease-out;
+            `;
+            element.textContent = elementCounter;
+            element.title = `${shapes[Math.floor(Math.random() * shapes.length)]} #${elementCounter}`;
+            
+            container.appendChild(element);
+            
+            if (container.children.length > 1 && container.children[0].tagName === 'P') {
+                container.removeChild(container.children[0]);
+            }
+        };
+        
+        // 移除最后一个元素
+        window.removeLastElement = function() {
+            const container = document.getElementById('dynamic-content');
+            const elements = Array.from(container.children).filter(el => el.tagName === 'DIV');
+            
+            if (elements.length > 0) {
+                const lastElement = elements[elements.length - 1];
+                lastElement.style.animation = 'fadeOut 0.3s ease-in';
+                setTimeout(() => {
+                    if (container.contains(lastElement)) {
+                        container.removeChild(lastElement);
+                    }
+                    
+                    if (container.children.length === 0) {
+                        container.innerHTML = '<p style="color: #718096; text-align: center;">动态内容区域</p>';
+                    }
+                }, 300);
+            }
+        };
+        
+        // 开始计数器
+        window.startCounter = function() {
+            if (counterInterval) return;
+            
+            counterInterval = setInterval(() => {
+                counter++;
+                document.getElementById('counter').textContent = counter;
+            }, 100);
+            
+            showAlert('计数器已开始');
+        };
+        
+        // 停止计数器
+        window.stopCounter = function() {
+            if (counterInterval) {
+                clearInterval(counterInterval);
+                counterInterval = null;
+                showAlert('计数器已停止');
+            }
+        };
+        
+        // 更新时间戳
+        function updateTimestamp() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN');
+            document.getElementById('timestamp').textContent = timeString;
+        }
+        
+        // 添加CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInScale {
+                from {
+                    opacity: 0;
+                    transform: translate(-50%, -50%) scale(0.8);
+                }
+                to {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1);
+                }
+            }
+            
+            @keyframes fadeOutScale {
+                from {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1);
+                }
+                to {
+                    opacity: 0;
+                    transform: translate(-50%, -50%) scale(0.8);
+                }
+            }
+            
+            @keyframes bounceIn {
+                0% {
+                    opacity: 0;
+                    transform: scale(0.3);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1.05);
+                }
+                70% {
+                    transform: scale(0.9);
+                }
+                100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+            
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+                to {
+                    opacity: 0;
+                    transform: scale(0.8);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🐙 Stagewise 测试页面已加载');
+            console.log('📌 使用右下角的工具栏开始测试功能');
+            
+            // 定期检查连接状态
+            setInterval(checkToolbarConnection, 1000);
+            checkToolbarConnection();
+            
+            // 定期更新时间戳
+            setInterval(updateTimestamp, 1000);
+            updateTimestamp();
+            
+            // 添加页面交互提示
+            showAlert('🎉 测试页面加载完成！尝试使用右下角的工具栏');
+        });
+        
+        // 模拟工具栏加载（用于演示）
+        setTimeout(() => {
+            if (!document.querySelector('[data-stagewise-toolbar]')) {
+                // 创建模拟工具栏用于演示
+                const mockToolbar = document.createElement('div');
+                mockToolbar.setAttribute('data-stagewise-toolbar', 'mock');
+                mockToolbar.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    width: 60px;
+                    height: 60px;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+                    z-index: 9999;
+                    transition: all 0.3s ease;
+                `;
+                mockToolbar.innerHTML = '🐙';
+                mockToolbar.title = 'Stagewise 工具栏 (演示版)';
+                
+                mockToolbar.addEventListener('click', () => {
+                    showAlert('这是演示版工具栏！\n请安装真实的Stagewise扩展以使用完整功能。');
+                });
+                
+                mockToolbar.addEventListener('mouseover', () => {
+                    mockToolbar.style.transform = 'scale(1.1)';
+                    mockToolbar.style.boxShadow = '0 12px 35px rgba(102, 126, 234, 0.4)';
+                });
+                
+                mockToolbar.addEventListener('mouseout', () => {
+                    mockToolbar.style.transform = 'scale(1)';
+                    mockToolbar.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
+                });
+                
+                document.body.appendChild(mockToolbar);
+                console.log('📌 模拟工具栏已加载用于演示');
+            }
+        }, 3000);
+    </script>
+
+    <!-- 工具栏集成脚本 -->
+    <!-- 注意：在实际使用中，这里应该加载真实的Stagewise工具栏脚本 -->
+    <!-- <script src="https://unpkg.com/@stagewise/toolbar@latest/dist/index.js"></script> -->
+    <!-- 或使用本地构建的工具栏脚本 -->
+</body>
+</html> 

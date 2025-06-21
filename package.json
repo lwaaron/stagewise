@@ -21,7 +21,9 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "copy-readme": "ts-node --esm scripts/copy-readme.ts",
-    "version-and-format": "pnpm changeset version && pnpm biome format --write ."
+    "version-and-format": "pnpm changeset version && pnpm biome format --write .",
+    "launch": "cd scripts && node launchStagewise.js",
+    "launch:setup": "cd scripts && npm install && node launchStagewise.js"
   },
   "devDependencies": {
     "@biomejs/biome": "2.0.0",
